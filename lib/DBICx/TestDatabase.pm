@@ -4,14 +4,14 @@ use warnings;
 
 use File::Temp 'tempfile'; 
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 # avoid contaminating the schema with the tempfile
 my @TMPFILES;
 
 sub new {
     my ($class, $schema_class) = @_;
-
+    
     eval "require $schema_class" 
       or die "failed to require $schema_class: $@";
     
@@ -29,7 +29,12 @@ END {
     # for some reason unlink after write doesn't unlink the files on
     # my system
 
-    unlink @TMPFILES;
+    if($ENV{DBIC_KEEP_TEST}){
+        print {*STDERR} "Keeping DBICx::TestDatabase databases: @TMPFILES\n";
+    }
+    else {
+        unlink @TMPFILES;
+    }
 }
 
 *connect = *new;
@@ -73,6 +78,20 @@ Loads C<$schema> and returns a connection to it.
 =head2 connect
 
 Alias for new.
+
+=head1 ENVIRONMENT
+
+You can control the behavior of this module at runtime by setting
+environment variables.
+
+=head2 DBIC_KEEP_TEST
+
+If this variable is true, then the test database will not be deleted
+at C<END> time.  Instead, a message containing the paths of the test
+databases will be printed.
+
+This is good if you want to look at the database your test generated,
+for debugging.
 
 =head1 AUTHOR
 
