@@ -2,38 +2,36 @@ package DBICx::TestDatabase;
 use strict;
 use warnings;
 
-use File::Temp 'tempfile'; 
+use File::Temp 'tempfile';
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 # avoid contaminating the schema with the tempfile
 my @TMPFILES;
 
 sub new {
     my ($class, $schema_class) = @_;
-    
-    eval "require $schema_class" 
+
+    eval "require $schema_class"
       or die "failed to require $schema_class: $@";
-    
-    my (undef, $filename) = tempfile;
-    my $schema = $schema_class->connect("DBI:SQLite:$filename") 
+
+    my $filename = ':memory:'; # use in-memory database
+
+    if($ENV{DBIC_KEEP_TEST}){
+        (undef, $filename) = tempfile;
+        push @TMPFILES, $filename;
+    }
+
+    my $schema = $schema_class->connect("DBI:SQLite:$filename")
       or die "failed to connect to DBI:SQLite:$filename ($schema_class)";
 
-    push @TMPFILES, $filename;
-    
     $schema->deploy;
     return $schema;
 }
 
 END {
-    # for some reason unlink after write doesn't unlink the files on
-    # my system
-
     if($ENV{DBIC_KEEP_TEST}){
         print {*STDERR} "Keeping DBICx::TestDatabase databases: @TMPFILES\n";
-    }
-    else {
-        unlink @TMPFILES;
     }
 }
 
@@ -58,7 +56,7 @@ create a test database like this:
 Then you can use C<$schema> normally:
 
    $schema->resultset('Blah')->create({ blah => '123' });
- 
+
 When your program exits, the temporary database will go away.
 
 =head1 DESCRIPTION
@@ -92,6 +90,9 @@ databases will be printed.
 
 This is good if you want to look at the database your test generated,
 for debugging.
+
+(Note that the database will never exist on disk if you don't set this
+to a true value.)
 
 =head1 AUTHOR
 
