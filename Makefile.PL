@@ -4,7 +4,7 @@ name 'DBICx-TestDatabase';
 all_from 'lib/DBICx/TestDatabase.pm';
 
 requires 'File::Temp';
-requires 'DBD::SQLite';
+requires 'DBD::SQLite' => '1.29';
 requires 'SQL::Translator';
 
 build_requires 'DBIx::Class';

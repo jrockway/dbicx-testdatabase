@@ -22,8 +22,9 @@ sub new {
         push @TMPFILES, $filename;
     }
 
-    my $schema = $schema_class->connect("DBI:SQLite:$filename")
-      or die "failed to connect to DBI:SQLite:$filename ($schema_class)";
+    my $schema = $schema_class->connect( "DBI:SQLite:$filename", '', '',
+        { sqlite_unicode => 1 } )
+        or die "failed to connect to DBI:SQLite:$filename ($schema_class)";
 
     $schema->deploy;
     return $schema;
