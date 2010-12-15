@@ -4,7 +4,7 @@ use warnings;
 
 use File::Temp 'tempfile';
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 # avoid contaminating the schema with the tempfile
 my @TMPFILES;
