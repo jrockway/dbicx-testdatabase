@@ -4,13 +4,13 @@ use warnings;
 
 use File::Temp 'tempfile';
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 # avoid contaminating the schema with the tempfile
 my @TMPFILES;
 
 sub new {
-    my ($class, $schema_class) = @_;
+    my ($class, $schema_class, $opts) = @_;
 
     eval "require $schema_class"
       or die "failed to require $schema_class: $@";
@@ -26,7 +26,7 @@ sub new {
         { sqlite_unicode => 1 } )
         or die "failed to connect to DBI:SQLite:$filename ($schema_class)";
 
-    $schema->deploy;
+    $schema->deploy unless $opts->{nodeploy};
     return $schema;
 }
 
