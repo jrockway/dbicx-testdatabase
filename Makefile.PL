@@ -11,4 +11,6 @@ build_requires 'DBIx::Class';
 build_requires 'Test::More';
 build_requires 'ok';
 
+repository 'https://github.com/jrockway/dbicx-testdatabase';
+
 WriteAll();
