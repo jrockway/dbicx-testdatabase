@@ -1,11 +1,11 @@
-0.05    29 July 2013
+0.05    2013-07-29
         - add option to avoid automatic deployment (Phil Hallows)
 
-0.04    14 December 2010
+0.04    2010-12-14
         - support unicode (patch by diegok)
 
-0.03    14 December 2010
+0.03    2010-12-14
         - use an in-memory sqlite database by default
 
-0.01    7 October 2007
+0.01    2007-10-07
         - first version, released upon an unsuspecting world
