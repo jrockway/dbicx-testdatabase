@@ -10,7 +10,7 @@ our $VERSION = '0.05';
 my @TMPFILES;
 
 sub new {
-    my ($class, $schema_class, $opts) = @_;
+    my ($class, $schema_class, $opts, $schema_opts) = @_;
 
     eval "require $schema_class"
       or die "failed to require $schema_class: $@";
@@ -22,8 +22,10 @@ sub new {
         push @TMPFILES, $filename;
     }
 
-    my $schema = $schema_class->connect( "DBI:SQLite:$filename", '', '',
-        { sqlite_unicode => 1 } )
+    $schema_opts ||= {};
+    $schema_opts->{sqlite_unicode} = 1;
+
+    my $schema = $schema_class->connect( "DBI:SQLite:$filename", '', '', $schema_opts )
         or die "failed to connect to DBI:SQLite:$filename ($schema_class)";
 
     $schema->deploy unless $opts->{nodeploy};
